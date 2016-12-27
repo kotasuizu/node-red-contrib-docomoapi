@@ -1,0 +1,113 @@
+<!--
+  Copyright (c) 2016 Kota Suizu
+  Released under the MIT license
+  http://opensource.org/licenses/mit-license.php
+-->
+
+<script type="text/x-red" data-template-name="docomoapi-config">
+    <div class="form-row">
+        <label for="node-config-input-key"><i class="fa fa-lock"></i> API Key</label>
+        <input type="password" id="node-config-input-key">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('docomoapi-config', {
+        category: "config",
+        color: "rgb(114, 199, 231)",
+        defaults: {
+            name: {
+                value: ""
+            }
+        },
+        credentials: {
+            key: {
+                type: "password",
+                required: true
+            }
+        },
+        label: function() {
+            return this.name;
+        }
+    });
+</script>
+
+
+
+<script type="text/x-red" data-template-name="Dialogue">
+    <div class="form-row">
+        <label for="node-input-docomoapiconfig"><i class="fa fa-globe"></i> API Key</label>
+        <input type="text" id="node-input-docomoapiconfig">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="Dialogue">
+    <p>This node provides chitchat using the docomo service.</p>
+    <p>
+        The input message contains the following properties:
+        <ul>
+            <li><code>msg.payload.utt</code> :
+                <Strong>(required String)</Strong> users utterance (255 characters or less)
+            </li>
+            <li><code>msg.payload.mode</code> : (String) Specify either dialog or srtr</li>
+            <li><code>msg.payload.context</code> : (String) context ID</li>
+            <li><code>msg.payload.t</code> : (int)</li>
+            <li><code>msg.payload.nickname</code> : (String)</li>
+            <li><code>msg.payload.nickname_y</code> : (String)</li>
+            <li><code>msg.payload.sex</code> : (String)</li>
+            <li><code>msg.payload.bloodtype</code> : (String)</li>
+            <li><code>msg.payload.birthdateY</code> : (int)</li>
+            <li><code>msg.payload.birthdateM</code> : (int)</li>
+            <li><code>msg.payload.birthdateD</code> : (int)</li>
+            <li><code>msg.payload.age</code> : (int)</li>
+            <li><code>msg.payload.constellations</code> : (String)</li>
+            <li><code>msg.payload.place</code> : (String)</li>
+        </ul>
+    </p>
+    <p>
+        The output message contains the following properties:
+        <ul>
+            <li><code>msg.payload.utt</code> : (String) Response from the system</li>
+            <li><code>msg.payload.yomi</code> : (String)</li>
+            <li><code>msg.payload.mode</code> : (String) The mode of dialogue returns one of dialog or srtr</li>
+            <li><code>msg.payload.context</code> : (String) Return ID automatically output from system</li>
+            <li><code>msg.payload.da</code> : (int)</li>
+        </ul>
+    </p>
+    <p>
+        For docomo API (dialogue) details, please see the following URL. <a href="https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_name=dialogue&p_name=api_1&lang=1" target="_blank">docomo API (dialogue)</a>
+    </p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('Dialogue', {
+        category: 'function',
+        defaults: {
+            name: {
+                value: ""
+            },
+            docomoapiconfig: {
+                type: "docomoapi-config",
+                required: true
+            }
+        },
+        color: "#00A0E2",
+        inputs: 1,
+        outputs: 1,
+        icon: "chatbot-message.png",
+        label: function() {
+            return this.name || "Dialogue";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
