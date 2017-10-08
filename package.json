@@ -10,12 +10,13 @@
     "chitchat",
     "dialogue",
     "dialog",
+    "KnowledgeQA",
     "docomo",
     "bluemix"
   ],
   "node-red": {
     "nodes": {
-      "shorturl": "docomoapi.js"
+      "docomoapi": "docomoapi.js"
     }
   },
   "repository": {

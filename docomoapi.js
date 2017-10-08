@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016 Kota Suizu
+ * Copyright (c) 2016, 2017 Kota Suizu
  * Released under the MIT license
  * http://opensource.org/licenses/mit-license.php
  **/
@@ -9,6 +9,7 @@ module.exports = function(RED) {
     var request = require('request');
 
     var DIALOGUE_URL = 'https://api.apigw.smt.docomo.ne.jp/dialogue/v1/dialogue?APIKEY=';
+    var KNOWLEDGEQA_URL = 'https://api.apigw.smt.docomo.ne.jp/knowledgeQA/v1/ask?APIKEY=';
 
     // APIKey情報を保持するConfig
     function DocomoAPIConfig(n) {
@@ -84,6 +85,51 @@ module.exports = function(RED) {
         });
     }
     RED.nodes.registerType("Dialogue", Dialogue);
+
+
+
+
+
+    // KnowledgeQA NodeIO処理
+    function KnowledgeQA(n) {
+        RED.nodes.createNode(this, n);
+
+        this.docomoapiConfig = RED.nodes.getNode(n.docomoapiconfig);
+
+        var node = this;
+        this.on('input', function(msg) {
+            if (_isTypeOf('String', msg.payload.q)) {
+
+                var myQ = "&q=" + encodeURIComponent(msg.payload.q);
+                var myUrl = KNOWLEDGEQA_URL + node.docomoapiConfig.key + myQ;
+
+
+                var options = {
+                    url: myUrl,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    json: true
+                };
+
+                request.get(options, function(err, response, body) {
+                    if (response.statusCode === 200) {
+                        msg.payload = body;
+                        node.send(msg);
+                        node.log(RED._('Succeeded to API Call.'));
+                    } else {
+                        node.error("Failed to API Call. StatusCode is " + response.statusCode + ".");
+                    };
+                });
+            } else {
+                node.error("Failed to API Call. Payload is not String.");
+            }
+        });
+    }
+    RED.nodes.registerType("KnowledgeQA", KnowledgeQA);
+
+
+
 
     function _isTypeOf(type, obj) {
         var clas = Object.prototype.toString.call(obj).slice(8, -1);

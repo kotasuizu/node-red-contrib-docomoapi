@@ -1,5 +1,5 @@
 <!--
-  Copyright (c) 2016 Kota Suizu
+  Copyright (c) 2016, 2017 Kota Suizu
   Released under the MIT license
   http://opensource.org/licenses/mit-license.php
 -->
@@ -105,6 +105,72 @@
         icon: "chatbot-message.png",
         label: function() {
             return this.name || "Dialogue";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
+
+
+
+
+<script type="text/x-red" data-template-name="KnowledgeQA">
+    <div class="form-row">
+        <label for="node-input-docomoapiconfig"><i class="fa fa-globe"></i> API Key</label>
+        <input type="text" id="node-input-docomoapiconfig">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="KnowledgeQA">
+    <p>This node provides KnowledgeQA using the docomo service.</p>
+    <p>
+        The input message contains the following properties:
+        <ul>
+            <li><code>msg.payload.q</code> :
+                <Strong>(required String)</Strong> users question text
+            </li>
+        </ul>
+    </p>
+    <p>
+        The output message contains the following properties:
+        <ul>
+            <li><code>msg.payload.code</code> : (String)</li>
+            <li><code>msg.payload.message.textForDisplay</code> : (String)</li>
+            <li><code>msg.payload.message.textForSpeech</code> : (String)</li>
+            <li><code>msg.payload.answers[].rank</code> : (String)</li>
+            <li><code>msg.payload.answers[].answerText</code> : (String)</li>
+            <li><code>msg.payload.answers[].linkText</code> : (String)</li>
+            <li><code>msg.payload.answers[].linkUrl</code> : (String)</li>
+        </ul>
+    </p>
+    <p>
+        For docomo API (KnowledgeQA) details, please see the following URL. <a href="https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_name=knowledge_qa&p_name=api_1#tag01" target="_blank">docomo API (KnowledgeQA)</a>
+    </p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('KnowledgeQA', {
+        category: 'function',
+        defaults: {
+            name: {
+                value: ""
+            },
+            docomoapiconfig: {
+                type: "docomoapi-config",
+                required: true
+            }
+        },
+        color: "#00A0E2",
+        inputs: 1,
+        outputs: 1,
+        icon: "chatbot-message.png",
+        label: function() {
+            return this.name || "KnowledgeQA";
         },
         labelStyle: function() {
             return this.name ? "node_label_italic" : "";
