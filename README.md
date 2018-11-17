@@ -16,14 +16,13 @@ https://nodered.org/docs/getting-started/adding-nodes
 docomo API requires API key. See https://dev.smt.docomo.ne.jp/?p=mypage.api.index
 
 
-Implemented Docomo APIs
---------------------------
-
-* [Dialogue](https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=5)
-* [Knowledge Q&A](https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=6)
+### Implemented Docomo APIs
+#### Natural Chatting
+* [Dialogue](https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_name=natural_dialogue&p_name=api_4_usage_scenario#tag01)
+* [Knowledge Q&A](https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_name=natural_dialogue&p_name=api_5_usage_scenario#tag01)
 
 ## Copyright and license
 
-Copyright (c) 2016, 2017 Kota Suizu  
+Copyright (c) 2016 - 2018 Kota Suizu  
 Released under the MIT license  
 http://opensource.org/licenses/mit-license.php

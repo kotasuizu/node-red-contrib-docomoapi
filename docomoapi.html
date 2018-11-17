@@ -1,5 +1,5 @@
 <!--
-  Copyright (c) 2016, 2017 Kota Suizu
+  Copyright (c) 2016 - 2018 Kota Suizu
   Released under the MIT license
   http://opensource.org/licenses/mit-license.php
 -->
@@ -38,6 +38,88 @@
 
 
 
+<script type="text/x-red" data-template-name="NaturalChattingRegistration">
+    <div class="form-row">
+        <label for="node-input-docomoapiconfig"><i class="fa fa-globe"></i> API Key</label>
+        <input type="text" id="node-input-docomoapiconfig">
+    </div>
+    <div class="form-row">
+      <label for="node-input-botid"><i class="fa fa-bookmark"></i> Bot ID</label>
+      <select type="text" id="node-input-botid">
+          <option value="Chatting">雑談対話</option>
+          <option value="Knowledge">知識検索</option>
+      </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-appkind"><i class="fa fa-bookmark"></i> AppKind</label>
+        <input type="text" id="node-input-appkind" placeholder="AppKind">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="NaturalChattingRegistration">
+    <p>This node provides Natural Chatting Registration using the docomo service.</p>
+    <p>
+        The input message contains the following properties:
+        <ul>
+            <li><code>msg.payload.botId</code> :
+                <Strong>(required String)</Strong> Specify functionID of Natural Chatting.
+            </li>
+            <li><code>msg.payload.appKind</code> :
+                <Strong>(required String)</Strong> Application type defined for each service. (Application fixed value) Please set an arbitrary value.
+            </li>
+        </ul>
+    </p>
+    <p>
+        The output message contains the following properties:
+        <ul>
+            <li><code>msg.payload.appId</code> : (String) Application ID for managing interactive state.</li>
+        </ul>
+    </p>
+    <p>
+        For docomo API (Natural Chatting)details, please see the following URL. <a href="https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_name=natural_dialogue&p_name=api_usage_scenario" target="_blank">docomo API (Natural Chatting)</a>
+    </p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('NaturalChattingRegistration', {
+        category: 'function',
+        defaults: {
+            name: {
+                value: ""
+            },
+            docomoapiconfig: {
+                type: "docomoapi-config",
+                required: true
+            },
+            botid: {
+              value: "Chatting",
+              required: true
+            },
+            appkind: {
+              value: "",
+              required: true
+            }
+        },
+        color: "#00A0E2",
+        inputs: 1,
+        outputs: 1,
+        icon: "chatbot-message.png",
+        label: function() {
+            return this.name || "NaturalChattingRegistration";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
+
+
+
+
 <script type="text/x-red" data-template-name="Dialogue">
     <div class="form-row">
         <label for="node-input-docomoapiconfig"><i class="fa fa-globe"></i> API Key</label>
@@ -53,37 +135,47 @@
     <p>This node provides chitchat using the docomo service.</p>
     <p>
         The input message contains the following properties:
-        <ul>
-            <li><code>msg.payload.utt</code> :
-                <Strong>(required String)</Strong> users utterance (255 characters or less)
-            </li>
-            <li><code>msg.payload.mode</code> : (String) Specify either dialog or srtr</li>
-            <li><code>msg.payload.context</code> : (String) context ID</li>
-            <li><code>msg.payload.t</code> : (int)</li>
-            <li><code>msg.payload.nickname</code> : (String)</li>
-            <li><code>msg.payload.nickname_y</code> : (String)</li>
-            <li><code>msg.payload.sex</code> : (String)</li>
-            <li><code>msg.payload.bloodtype</code> : (String)</li>
-            <li><code>msg.payload.birthdateY</code> : (int)</li>
-            <li><code>msg.payload.birthdateM</code> : (int)</li>
-            <li><code>msg.payload.birthdateD</code> : (int)</li>
-            <li><code>msg.payload.age</code> : (int)</li>
-            <li><code>msg.payload.constellations</code> : (String)</li>
-            <li><code>msg.payload.place</code> : (String)</li>
-        </ul>
+<pre>
+msg.payload = {
+  "appId": "(required String) Application ID for managing interactive state.",
+  "voiceText": "(required String) users utterance (255 characters or less)",
+  "clientData": {
+    "option": {
+      "nickname": "(String)",
+      "nicknameY": "(String)",
+      "sex": "(String) 男, 女",
+      "bloodtype": "(String) A, B, O, AB",
+      "birthdateY": ,
+      "birthdateM": ,
+      "birthdateD": ,
+      "age": ,
+      "constellations": "",
+      "place": "",
+      "mode": "(String) Specify either dialog or srtr",
+      "t":
+    },
+    "appRecvTime": "(String YYYY-MM-DD hh:mm:ss) Time at which the application last received the acquisition parameter."
+  }
+}
+</pre>
     </p>
     <p>
         The output message contains the following properties:
-        <ul>
-            <li><code>msg.payload.utt</code> : (String) Response from the system</li>
-            <li><code>msg.payload.yomi</code> : (String)</li>
-            <li><code>msg.payload.mode</code> : (String) The mode of dialogue returns one of dialog or srtr</li>
-            <li><code>msg.payload.context</code> : (String) Return ID automatically output from system</li>
-            <li><code>msg.payload.da</code> : (int)</li>
-        </ul>
+<pre>
+msg.payload = {
+  "systemText": {
+    "expression": "(String) Response from the system utterance",
+    "utterance": "(String) Text for speech synthesis. In the case of no setting, speech synthesis is performed on the display text."
+  },
+  "command": {
+    "mode": "(String) dialog or srtr"
+  },
+  "serverSendTime": "(String YYYY-MM-DD hh:mm:ss) Time at which the server sent acquisition parameters."
+}
+</pre>
     </p>
     <p>
-        For docomo API (dialogue) details, please see the following URL. <a href="https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_name=dialogue&p_name=api_1&lang=1" target="_blank">docomo API (dialogue)</a>
+        For docomo API (Natural Chatting dialogue) details, please see the following URL. <a href="https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_name=natural_dialogue&p_name=api_4_usage_scenario#tag01" target="_blank">docomo API (Natural Chatting dialogue)</a>
     </p>
 </script>
 
@@ -130,26 +222,28 @@
     <p>This node provides KnowledgeQA using the docomo service.</p>
     <p>
         The input message contains the following properties:
-        <ul>
-            <li><code>msg.payload.q</code> :
-                <Strong>(required String)</Strong> users question text
-            </li>
-        </ul>
+<pre>
+msg.payload = {
+  "appId": "(required String) Application ID for managing interactive state.",
+  "voiceText": "(required String) users question text",
+  "appRecvTime": "(String YYYY-MM-DD hh:mm:ss) Time at which the application last received the acquisition parameter."
+}
+</pre>
     </p>
     <p>
         The output message contains the following properties:
-        <ul>
-            <li><code>msg.payload.code</code> : (String)</li>
-            <li><code>msg.payload.message.textForDisplay</code> : (String)</li>
-            <li><code>msg.payload.message.textForSpeech</code> : (String)</li>
-            <li><code>msg.payload.answers[].rank</code> : (String)</li>
-            <li><code>msg.payload.answers[].answerText</code> : (String)</li>
-            <li><code>msg.payload.answers[].linkText</code> : (String)</li>
-            <li><code>msg.payload.answers[].linkUrl</code> : (String)</li>
-        </ul>
+<pre>
+msg.payload = {
+  "systemText": {
+    "expression": "(String) Response from the system utterance",
+    "utterance": "(String) Text for speech synthesis. In the case of no setting, speech synthesis is performed on the display text."
+  },
+  "serverSendTime": "(String YYYY-MM-DD hh:mm:ss) Time at which the server sent acquisition parameters."
+}
+</pre>
     </p>
     <p>
-        For docomo API (KnowledgeQA) details, please see the following URL. <a href="https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_name=knowledge_qa&p_name=api_1#tag01" target="_blank">docomo API (KnowledgeQA)</a>
+        For docomo API (Natural Chatting KnowledgeQA) details, please see the following URL. <a href="https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_name=natural_dialogue&p_name=api_5_usage_scenario#tag01" target="_blank">docomo API (Natural Chatting KnowledgeQA)</a>
     </p>
 </script>
 
